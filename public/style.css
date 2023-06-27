@@ -1,0 +1,18 @@
+
+main {
+  margin: auto;
+  width: 50%;
+  border: 1px solid gray;
+  padding: 1em;
+}
+
+#chat-content-box {
+  height: 20em;
+  border: 1px solid gray;
+  padding: 1em;
+  overflow-y: scroll;
+}
+
+#chat-input-box {
+  padding: 1em;
+}
