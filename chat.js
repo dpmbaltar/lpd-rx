@@ -33,11 +33,12 @@ wsServer.on("request", function(request) {
   connection.on("message", function(message) {
     if (message.type === "utf8") {
       console.log("Received message: " + message.utf8Data);
-      let counter = 0;
+      wsServer.broadcastUTF(message.utf8Data);
+      /*let counter = 0;
       cron.schedule("* * * * * *", function() {
         counter++;
         connection.sendUTF("Message " + counter);
-      });
+      });*/
     } else if (message.type === "binary") {
       console.log("Received Binary Message of " + message.binaryData.length + " bytes");
       connection.sendBytes(message.binaryData);
