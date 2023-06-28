@@ -4,22 +4,33 @@
     <title>Web Chat</title>
     <meta charset="UTF-8" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="./style.css?v=0.13" rel="stylesheet" type="text/css" />
+    <link href="./style.css?v=0.23" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-    <script src="./main.js?v=0.18" type="text/javascript"></script>
+    <script src="./main.js?v=0.29" type="text/javascript"></script>
   </head>
   <body>
     <main class="container-md">
-      <h3>Web Chat <span id="chat-status-text" class="badge rounded-pill text-bg-secondary">Desconectado</span></h3>
-      <div id="chat-content-box"></div>
-      <div id="chat-input-box">
-        <div class="input-group mb-3">
-          <input id="chat-input-text" type="text" class="form-control" placeholder="Escribir mensaje..." aria-label="Escribir mensaje..." aria-describedby="button-addon2" disabled>
-          <button id="chat-input-send" class="btn btn-primary" type="button" id="button-addon2" disabled>Enviar</button>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Web Chat <span id="chat-status-text" class="badge rounded-pill text-bg-danger">Desconectado</span></h4>
+          <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">URL</span>
+              <input id="chat-input-url" type="text" value="ws://localhost:8080" class="form-control" placeholder="URL" aria-label="URL" aria-describedby="button-addon2">
+              <span class="input-group-text" id="basic-addon1">Nombre</span>
+              <input id="chat-input-name" type="text" value="Usuario" class="form-control" placeholder="Nombre" aria-label="Nombre" aria-describedby="button-addon2">
+              <button id="chat-input-open-close" class="btn btn-success" type="button" id="button-addon2">Conectarse</button>
+          </div>
         </div>
-        <div class="input-group mb-3">
-          <input id="chat-input-name" type="text" class="form-control" placeholder="Nombre" aria-label="Nombre" aria-describedby="button-addon2">
-          <button id="chat-input-open-close" class="btn btn-success" type="button" id="button-addon2">Conectarse</button>
+        <div class="card-body">
+          <div id="chat-content-box"></div>
+        </div>
+        <div class="card-footer">
+          <div id="chat-input-box">
+            <div class="input-group mb-3">
+              <input id="chat-input-text" type="text" class="form-control" placeholder="Escribir mensaje..." aria-label="Escribir mensaje..." aria-describedby="button-addon2" disabled>
+              <button id="chat-input-send" class="btn btn-primary" type="button" id="button-addon2" disabled>Enviar</button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
