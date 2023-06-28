@@ -1,4 +1,3 @@
-const cron = require("node-cron");
 const http = require("http");
 const WebSocketServer = require("websocket").server;
 
@@ -34,11 +33,6 @@ wsServer.on("request", function(request) {
     if (message.type === "utf8") {
       console.log("Received message: " + message.utf8Data);
       wsServer.broadcastUTF(message.utf8Data);
-      /*let counter = 0;
-      cron.schedule("* * * * * *", function() {
-        counter++;
-        connection.sendUTF("Message " + counter);
-      });*/
     } else if (message.type === "binary") {
       console.log("Received Binary Message of " + message.binaryData.length + " bytes");
       connection.sendBytes(message.binaryData);
