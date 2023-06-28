@@ -3,6 +3,8 @@
  */
 let connected = false;
 let socket;
+let errorAlert;
+let errorText;
 let urlInput;
 let statusText;
 let contentBox;
@@ -10,6 +12,32 @@ let nameInput;
 let textInput;
 let sendButton;
 let openCloseButton;
+
+/**
+ * Arma el HTML para mostrar un mensaje.
+ */
+function createMessageHtml(user, text) {
+  const messageTitle = document.createElement("h6");
+  const messageText = document.createElement("div");
+  const messageBody = document.createElement("div");
+  const messageCard = document.createElement("div");
+
+  messageText.textContent = text;
+  messageTitle.textContent = user + " dice:"
+  messageTitle.className = "card-subtitle text-body-secondary";
+  messageBody.className = "card-body";
+  messageCard.className = "card mb-2";
+  messageBody.appendChild(messageTitle);
+  messageBody.appendChild(messageText);
+  messageCard.appendChild(messageBody);
+
+  if (nameInput.value === user) {
+    messageTitle.classList.add("text-end");
+    messageText.classList.add("text-end");
+  }
+
+  return messageCard;
+}
 
 /**
  * Se conecta al servidor del chat.
@@ -29,6 +57,8 @@ function connect() {
 
   socket.addEventListener("open", function() {
     connected = true;
+    errorAlert.classList.add("collapse");
+    errorAlert.classList.remove("show");
     statusText.textContent = "Conectado";
     statusText.className = "badge rounded-pill text-bg-success";
     openCloseButton.className = "btn btn-danger";
@@ -55,19 +85,14 @@ function connect() {
 
   socket.addEventListener("message", function(messageEvent) {
     const message = JSON.parse(messageEvent.data);
-    const messageCard = document.createElement("div");
-    const messageBody = document.createElement("div");
-
-    messageBody.textContent = message.usr + ' dice: ' + message.txt;
-    messageBody.className = "card-body";
-    messageCard.className = "card mb-2";
-    messageCard.appendChild(messageBody);
-    contentBox.appendChild(messageCard);
+    const messageHtml = createMessageHtml(message.usr, message.txt);
+    contentBox.appendChild(messageHtml);
     contentBox.scrollTop = contentBox.scrollHeight;
   });
 
   socket.addEventListener("error", function(event) {
-    statusText.textContent = "Error: " + event;
+    errorText.textContent = "Error: " + event;
+    errorAlert.className = "alert alert-danger alert-dismissible fade show";
   });
 }
 
@@ -92,6 +117,8 @@ function send() {
 
 window.addEventListener("load", function() {
   urlInput = this.document.getElementById("chat-input-url");
+  errorAlert = this.document.getElementById("chat-error-alert");
+  errorText = this.document.getElementById("chat-error-text");
   statusText = this.document.getElementById("chat-status-text");
   contentBox = this.document.getElementById("chat-content-box");
   nameInput = this.document.getElementById("chat-input-name");
@@ -111,4 +138,6 @@ window.addEventListener("load", function() {
     if (keyboardEvent.key === "Enter")
       sendButton.click();
   });
+
+  nameInput.value = "Usuario#" + Math.floor(Math.random() * 2**16);
 });
