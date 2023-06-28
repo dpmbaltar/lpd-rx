@@ -1,8 +1,9 @@
-
-const url = "ws://localhost:8080";
-
+/**
+ * Cliente del chat.
+ */
 let connected = false;
 let socket;
+let urlInput;
 let statusText;
 let contentBox;
 let nameInput;
@@ -10,29 +11,38 @@ let textInput;
 let sendButton;
 let openCloseButton;
 
+/**
+ * Se conecta al servidor del chat.
+ */
 function connect() {
+  if (urlInput.value.length == 0)
+    return alert("Ingresar URL");
+  if (nameInput.value.length == 0)
+    return alert("Ingresar nombre");
+
+  urlInput.setAttribute("disabled", true);
   nameInput.setAttribute("disabled", true);
   openCloseButton.setAttribute("disabled", true);
   statusText.textContent = "Conectando...";
 
-  // Create socket
-  socket = new WebSocket(url, "echo-protocol");
+  socket = new WebSocket(urlInput.value, "echo-protocol");
 
-  // Socket open event handler
   socket.addEventListener("open", function() {
     connected = true;
     statusText.textContent = "Conectado";
-    textInput.removeAttribute("disabled");
-    sendButton.removeAttribute("disabled");
-    openCloseButton.removeAttribute("disabled");
+    statusText.className = "badge rounded-pill text-bg-success";
     openCloseButton.className = "btn btn-danger";
     openCloseButton.textContent = "Desconectarse";
+    openCloseButton.removeAttribute("disabled");
+    sendButton.removeAttribute("disabled");
+    textInput.removeAttribute("disabled");
+    textInput.focus();
   });
 
-  // Socket close event handler
   socket.addEventListener("close", function() {
     connected = false;
     statusText.textContent = "Desconectado";
+    statusText.className = "badge rounded-pill text-bg-danger";
     textInput.value = "";
     textInput.setAttribute("disabled", true);
     sendButton.setAttribute("disabled", true);
@@ -40,9 +50,9 @@ function connect() {
     openCloseButton.className = "btn btn-success";
     openCloseButton.textContent = "Conectarse";
     nameInput.removeAttribute("disabled");
+    urlInput.removeAttribute("disabled");
   });
 
-  // Socket message event handler
   socket.addEventListener("message", function(messageEvent) {
     const message = JSON.parse(messageEvent.data);
     const messageCard = document.createElement("div");
@@ -56,27 +66,32 @@ function connect() {
     contentBox.scrollTop = contentBox.scrollHeight;
   });
 
-  // Socket error event handler
   socket.addEventListener("error", function(event) {
     statusText.textContent = "Error: " + event;
   });
 }
 
+/**
+ * Se desconecta del servidor.
+ */
 function disconnect() {
   socket.close();
 }
 
+/**
+ * Envía el mensaje al servidor.
+ */
 function send() {
-  const name = nameInput.value;
-  const text = textInput.value;
-  const message = { usr: name, txt: text };
+  if (textInput.value.length == 0)
+    return;
+
+  const message = { usr: nameInput.value, txt: textInput.value };
   textInput.value = "";
   socket.send(JSON.stringify(message));
 }
 
 window.addEventListener("load", function() {
-
-  // Get HTML elements
+  urlInput = this.document.getElementById("chat-input-url");
   statusText = this.document.getElementById("chat-status-text");
   contentBox = this.document.getElementById("chat-content-box");
   nameInput = this.document.getElementById("chat-input-name");
@@ -84,16 +99,16 @@ window.addEventListener("load", function() {
   sendButton = this.document.getElementById("chat-input-send");
   openCloseButton = this.document.getElementById("chat-input-open-close");
 
-  // Open/close button handler
   openCloseButton.addEventListener("click", function() {
-    if (connected) {
+    if (connected)
       disconnect();
-    } else {
+    else
       connect();
-    }
   });
 
-  // Send button handler
   sendButton.addEventListener("click", send);
-
+  textInput.addEventListener("keydown", function(keyboardEvent) {
+    if (keyboardEvent.key === "Enter")
+      sendButton.click();
+  });
 });
